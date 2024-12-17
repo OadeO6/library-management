@@ -35,10 +35,12 @@ Catalog.init(
     },
     total_copy: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
       allowNull: false,
     },
     available_copy: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
       allowNull: false,
     },
     edition: {
@@ -57,6 +59,7 @@ Catalog.init(
       type: DataTypes.ARRAY(
         DataTypes.ENUM("technology", "art") // Enum values
       ),
+      defaultValue: [],
       allowNull: false,
     },
   },

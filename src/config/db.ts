@@ -16,10 +16,10 @@ export const CONFIG = {
     }
   },
   "test": {
-    "username": "username",
-    "password": "password",
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": POSTGRESQL_USER,
+    "password": POSTGRES_PASSWORD,
+    "database": POSTGRESQL_DB,
+    "host": POSTGRES_HOST,
     "dialect": "postgres",
     "pool": {
       "max": 5,
@@ -29,10 +29,10 @@ export const CONFIG = {
     }
   },
   "production": {
-    "username": "username",
-    "password": "password",
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": POSTGRESQL_USER,
+    "password": POSTGRES_PASSWORD,
+    "database": POSTGRESQL_DB,
+    "host": POSTGRES_HOST,
     "dialect": "postgres",
     "pool": {
       "max": 5,

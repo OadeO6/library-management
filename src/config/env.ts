@@ -1,22 +1,11 @@
 import { z } from "zod";
+import { nodeEnvironment, numericString } from "../schemas/types";
 
 const EnvSchema = z.object({
-  PORT: z.string().default("3000").transform((val) => {
-    const num = Number(val);
-    if (isNaN(num)) {
-      throw new Error("Invalid number");
-    }
-    return num;
-  }),
+  PORT: numericString.default("3000"),
   JWT_SECRET: z.string(),
-  NODE_ENV: z.enum(['production', 'development', 'test']),
-  POSTGRESQL_PORT: z.string().transform((val) => {
-    const num = Number(val);
-    if (isNaN(num)) {
-      throw new Error("Invalid number");
-    }
-    return num;
-  }),
+  NODE_ENV: nodeEnvironment.default("development"),
+  POSTGRESQL_PORT: numericString,
   POSTGRESQL_DB: z.string(),
   POSTGRESQL_USER: z.string(),
   POSTGRES_PASSWORD: z.string(),

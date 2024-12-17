@@ -22,6 +22,7 @@ Book.init(
     },
     status: {
       type: DataTypes.ENUM("borrowed", "available", "lost"),
+      defaultValue: "available",
       allowNull: false,
     },
     donor_id: {
