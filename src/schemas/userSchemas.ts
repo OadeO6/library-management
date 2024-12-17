@@ -1,8 +1,6 @@
 import { z } from "zod";
-import * as yaml from "yaml";
 import {
   extendZodWithOpenApi,
-  createDocument
 } from "zod-openapi";
 extendZodWithOpenApi(z);
 

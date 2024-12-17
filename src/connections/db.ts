@@ -1,11 +1,8 @@
 import { Sequelize } from "sequelize";
-import {  } from "../config/env";
-import { Models } from "../models";
 import { DB_CONFIG } from "../config/db";
 
 const sequelize = new Sequelize({
   ...DB_CONFIG,
-  models: Models,
   logging: true,
 });
 
