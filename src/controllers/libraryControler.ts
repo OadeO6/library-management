@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AddBook } from '../crud/db';
 import { Book } from '../models';
 import { UserTokenData } from '../schemas/types';
+import { newBookResponseSchema } from '../schemas/librarySchemas';
 
 export const addBook = async (req: Request, res: Response) => {
   try {
@@ -9,7 +10,9 @@ export const addBook = async (req: Request, res: Response) => {
     const data = req.body;
 
     const books: Book[] = await AddBook(user, data);
-    res.status(201).json({ message: books});
+    res.status(201).json(
+      newBookResponseSchema.parse({ message: books})
+    );
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error", error });
   }

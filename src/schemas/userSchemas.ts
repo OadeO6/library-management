@@ -28,6 +28,11 @@ export const userRegistrationSchema = z.object({
   }),
 })
 
+export const userRegistrationResponseSchema = z.object({
+  message: z.string(),
+  user: z.any()
+})
+
 export const userRegistrationRequest = z.object({
   body: userRegistrationSchema,
 });
@@ -42,6 +47,11 @@ export const userLoginSchema = z.object({
     example: "mypassword",
   }),
 });
+
+export const userloginResponseSchema = z.object({
+  message: z.string(),
+  token: z.string()
+})
 
 export const userLoginRequest = z.object({
   body: userLoginSchema,
