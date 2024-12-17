@@ -44,6 +44,10 @@ export const newBookSchema = z.object({
   }),
 })
 
+export const newBookResponseSchema = z.object({
+  message: z.string()
+})
+
 export const newBookRequest = z.object({
   body: newBookSchema,
 });

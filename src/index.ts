@@ -8,6 +8,7 @@ import { createDocument } from 'zod-openapi';
 import { z } from 'zod';
 import swaggerUi from "swagger-ui-express";
 import libraryRouter from "./routes/libraryRoutes";
+import { api_doc } from "./openapi";
 
 const app = express();
 const PORT: number = 3000;
@@ -33,39 +34,20 @@ const messageSchema = z.string().openapi({
   example: "Health check successful",
 });
 
-// OpenAPI documentation
-const document = createDocument({
-  openapi: '3.1.0',
-  info: {
-    title: 'My API',
-    version: '1.0.0',
-  },
-  paths: {
-    '/': {
-      get: {
-        summary: "Health check endpoint",
-        responses: {
-          '200': {
-            description: 'Health check successful',
-            content: {
-              'application/json': {
-                schema: z.object({ message: messageSchema }),
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-});
-
 // Health check route
 app.get("/", (_: Request, res: Response) => {
   res.status(200).json({ message: "Health check successful" });
 });
 
 // Swagger documentation route
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(document));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(api_doc));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({
+    error: "Not Found",
+    message: `The endpoint ${req.originalUrl} does not exist.`,
+  });
+});
 
 // Start the server
 (async () => {
