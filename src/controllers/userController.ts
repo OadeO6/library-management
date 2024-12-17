@@ -3,7 +3,9 @@ import { comparePassword, generateToken } from '../auth/util';
 import { generatePasswordHash } from "../auth/util";
 import { generateLibraryNumber } from "../utils/library";
 import { z } from 'zod';
-import User from '../models/User';
+import { Book, Catalog, User } from '../models';
+import { createUser, findUser } from '../crud/db';
+
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -11,7 +13,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const libraryNumber = await generateLibraryNumber();
 
     // Create user
-    const user = await User.create({
+    const user = await createUser({
       ...req.body,
       password: hashedPassword,
       library_number: libraryNumber,
@@ -29,7 +31,7 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   try {
     // Find user
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await findUser({ email: req.body.email });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
