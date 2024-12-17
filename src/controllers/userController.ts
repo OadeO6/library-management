@@ -3,8 +3,8 @@ import { comparePassword, generateToken } from '../auth/util';
 import { generatePasswordHash } from "../auth/util";
 import { generateLibraryNumber } from "../utils/library";
 import { z } from 'zod';
-import { Book, Catalog, User } from '../models';
 import { createUser, findUser } from '../crud/db';
+import { UserAlreadyExistsError } from '../errors/db';
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -23,6 +23,8 @@ export const registerUser = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ errors: error.errors });
+    } else if (error instanceof UserAlreadyExistsError){
+      return res.status(409).json({ errors: error.message });
     }
     res.status(500).json({ message: "Internal Server Error", error });
   }
