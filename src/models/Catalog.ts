@@ -11,7 +11,7 @@ class Catalog extends Model<InferAttributes<Catalog>, InferCreationAttributes<Ca
   public edition?: string;
   public publisher?: string;
   public publication_year?: number;
-  public category!: string[]; // Enum list
+  public category!: string[];
 }
 
 Catalog.init(
@@ -57,7 +57,7 @@ Catalog.init(
     },
     category: {
       type: DataTypes.ARRAY(
-        DataTypes.ENUM("technology", "art") // Enum values
+        DataTypes.STRING
       ),
       defaultValue: [],
       allowNull: false,

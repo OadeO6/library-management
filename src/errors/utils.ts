@@ -1,8 +1,20 @@
 import { ZodError } from "zod";
+import { ErrorSchemaType } from "../schemas/types";
 
-export const constructError = (message: string, details: ZodError | Error) => {
-    // const errorMessages = typeof details is tupl ? details.errors.map((issue: any) => ({
-    //   message: `${issue.path.join('.')} is ${issue.message}`,
-    // })) : [details];
-  return { error: message, details }
+export const responseError = (message: string, error: ZodError | Error | null = null) => {
+  let errorMessages: ErrorSchemaType = [];
+  if (error) {
+    if (error instanceof ZodError) {
+      errorMessages = error.errors.map((issue: any) => ({
+        message: `${issue.path.join('.')} is ${issue.message}`,
+      }))
+    } else if ((error as ZodError).errors) {
+      errorMessages = (error as ZodError).errors.map((issue: any) => ({
+        message: `${issue.path.join('.')} is ${issue.message}`,
+      }))
+    } else {
+      errorMessages = [{message: error.message}];
+    }
+  }
+  return { error: message, details: errorMessages }
 }

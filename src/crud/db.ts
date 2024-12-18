@@ -1,7 +1,7 @@
 import sequelize from "../connections/db";
 import { Book, Catalog, User } from "../models";
-import { Transaction, UniqueConstraintError } from "sequelize";
-import { UserAlreadyExistsError , DonorNotFoundError, BookNotAvailableError, BookNotBorrowedError, TransactionFailedError } from "../errors/db";
+import { Transaction, UniqueConstraintError, ForeignKeyConstraintError } from "sequelize";
+import { UserAlreadyExistsError , DonorNotFoundError, BookNotAvailableError, BookNotBorrowedError, TransactionFailedError, UserNotFoundError } from "../errors/db";
 import { UserTokenData, findUserArgType } from "../schemas/types";
 import { newBookSchemaType } from "../schemas/librarySchemas";
 
@@ -57,10 +57,10 @@ export const findUser = async (data: findUserArgType): Promise<User | null> => {
 export const AddBook = async (
   user: UserTokenData,
   book_data: newBookSchemaType
-): Promise<Book[]> => {
+): Promise<[Catalog, Book[], number, string]> => {
   const transaction: Transaction = await sequelize.transaction();
   try {
-    const catalog = await Catalog.create(
+    const catalog: Catalog = await Catalog.create(
       {
         title: book_data.title,
         author: book_data.author,
@@ -83,6 +83,7 @@ export const AddBook = async (
     }
 
     const donor_id = donor ? donor.id : user.id;
+    const donor_library_number: string = donor ? book_data.donor_library_number : user.library_number;
 
     const books: Book[] = [];
     const count: number = book_data.count ? book_data.count : 1;
@@ -100,9 +101,16 @@ export const AddBook = async (
     }
 
     await transaction.commit();
-    return books;
+    const data =  [catalog, books, count, donor_library_number] as [Catalog, Book[], number, string];
+    return data;
   } catch (error) {
     await transaction.rollback();
-    throw new TransactionFailedError("adding books", error.message);
+    if (error instanceof DonorNotFoundError) {
+      throw error;
+    } else if (error instanceof ForeignKeyConstraintError){
+      throw new UserNotFoundError("Something went wrong");
+    } else {
+      throw new TransactionFailedError("adding books", error.message);
+    }
   }
 };
