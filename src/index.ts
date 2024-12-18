@@ -9,9 +9,9 @@ import { z } from 'zod';
 import swaggerUi from "swagger-ui-express";
 import libraryRouter from "./routes/libraryRoutes";
 import { api_doc } from "./openapi";
+import { PORT } from "./config/env";
 
 const app = express();
-const PORT: number = 3000;
 
 // Express middleware
 app.use(cors());
