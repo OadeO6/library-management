@@ -4,33 +4,52 @@ import {
 } from "zod-openapi";
 extendZodWithOpenApi(z);
 
-// User registration schema
-export const userRegistrationSchema = z.object({
-  first_name: z.string().min(1).max(50).openapi({
-    description: "User's First Name.",
-    example: "Ade",
-  }),
-  last_name: z.string().min(1).max(50).openapi({
-    description: "User's Last Name",
-    example: "Kunle",
-  }),
-  email: z.string().email().openapi({
-    description: "User's email",
-    example: "user@example.com",
-  }),
-  password: z.string().min(8).openapi({
-    description: "User's password",
-    example: "mypassword",
-  }),
-  phone_number: z.string().optional().openapi({
-    description: "User's PhoneNumber",
-    example: "09011111111",
-  }),
+const first_name = z.string().min(1).max(50).openapi({
+  description: "User's First Name.",
+  example: "Ade",
+});
+const last_name = z.string().min(1).max(50).openapi({
+  description: "User's Last Name",
+  example: "Kunle",
+});
+const email = z.string().email().openapi({
+  description: "User's email",
+  example: "user@example.com",
+});
+const password = z.string().min(8).openapi({
+  description: "User's password",
+  example: "mypassword",
+});
+const phone_number = z.string().optional().openapi({
+  description: "User's Phone Number",
+  example: "09011111111",
+})
+const library_number = z.string().optional().openapi({
+  description: "User's Library Number",
+  example: "LIB-1022",
 })
 
+// User registration schema
+export const userRegistrationSchema = z.object({
+  first_name,
+  last_name,
+  email,
+  password,
+  phone_number,
+})
+
+
 export const userRegistrationResponseSchema = z.object({
-  message: z.string(),
-  user: z.any()
+  message: z.string().openapi({
+    example: "Registration Successfull",
+  }),
+  user: z.object({
+    first_name,
+    last_name,
+    library_number,
+    email,
+    phone_number,
+  })
 })
 
 export const userRegistrationRequest = z.object({
@@ -38,18 +57,14 @@ export const userRegistrationRequest = z.object({
 });
 
 export const userLoginSchema = z.object({
-  email: z.string().email().openapi({
-    description: "User's email",
-    example: "user@example.com",
-  }),
-  password: z.string().min(8).openapi({
-    description: "User's password",
-    example: "mypassword",
-  }),
+  email,
+  password,
 });
 
 export const userloginResponseSchema = z.object({
-  message: z.string(),
+  message: z.string().openapi({
+    example: "Login Successfull",
+  }),
   token: z.string()
 })
 

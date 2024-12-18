@@ -89,6 +89,12 @@ export const api_doc = createDocument({
               'application/json': { schema: ErrorResponseSchema },
             },
           },
+          '401': {
+            description: '401 Incorrect cridentials',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
           '500': {
             description: '500 Internal Server Error',
             content: {

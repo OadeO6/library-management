@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { createUser, findUser } from '../crud/db';
 import { UserAlreadyExistsError } from '../errors/db';
 import { userloginResponseSchema, userRegistrationResponseSchema } from '../schemas/userSchemas';
+import { responseError } from '../errors/utils';
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -25,11 +26,11 @@ export const registerUser = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
+      return res.status(400).json({ error: error.errors });
     } else if (error instanceof UserAlreadyExistsError){
-      return res.status(409).json({ errors: error.message });
+      return res.status(409).json({ error: error.message });
     }
-    res.status(500).json({ error: "Internal Server Error", details: error });
+    res.status(500).json(responseError("Internal Server Error", error));
   }
 };
 
@@ -56,6 +57,6 @@ export const loginUser = async (req: Request, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: "Schema Validation error", details: error.errors });
     }
-    res.status(500).json({ error: "Internal Server Error", details: error });
+    res.status(500).json(responseError("Internal Server Error", error));
   }
 };
