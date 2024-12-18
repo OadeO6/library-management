@@ -45,7 +45,7 @@ export const newBookSchema = z.object({
 })
 
 export const newBookResponseSchema = z.object({
-  message: z.string()
+  message: z.any()
 })
 
 export const newBookRequest = z.object({

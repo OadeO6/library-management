@@ -1,9 +1,20 @@
 import { z } from "zod";
-
+import {
+  extendZodWithOpenApi,
+} from "zod-openapi";
+extendZodWithOpenApi(z);
 
 export const numericString = z.string().regex(/^\d+$/, {
   message: "Must contain only numeric characters",
 });
+
+export const ErrorResponseSchema = z.object({
+  error: z.string(),
+  details: z.object({
+    message: z.string()
+  }).optional()
+});
+
 export const nodeEnvironment = z.enum(['production', 'development', 'test']);
 
 // types

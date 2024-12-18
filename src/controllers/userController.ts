@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
     } else if (error instanceof UserAlreadyExistsError){
       return res.status(409).json({ errors: error.message });
     }
-    res.status(500).json({ message: "Internal Server Error", error });
+    res.status(500).json({ error: "Internal Server Error", details: error });
   }
 };
 
@@ -38,12 +38,12 @@ export const loginUser = async (req: Request, res: Response) => {
     // Find user
     const user = await findUser({ email: req.body.email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     const passwordValid = await comparePassword(req.body.password, user.password)
     if (!passwordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     // Generate JWT
@@ -54,8 +54,8 @@ export const loginUser = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ errors: error.errors });
+      return res.status(400).json({ error: "Schema Validation error", details: error.errors });
     }
-    res.status(500).json({ message: "Internal Server Error", error });
+    res.status(500).json({ error: "Internal Server Error", details: error });
   }
 };
