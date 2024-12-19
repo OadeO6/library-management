@@ -78,4 +78,40 @@ export const newBookRequest = z.object({
   body: newBookSchema,
 });
 
+export const borrowBookRequestParams = z.object({
+  catalog_id: z.string().openapi({
+    example: "9f73c210-b417-409e-ac53-6cf4a0aa36c4",
+    description: 'A Books Catalog ID'
+  })
+})
+export const borrowBookRequest = z.object({
+  params: borrowBookRequestParams,
+});
+
+export const borrowBookResponseSchema = z.object({
+  message: z.string().openapi({
+    example: "Book borrowed Successfull",
+  }),
+  catalog_id: id,
+  borrowed_book_id: id,
+})
+
+export const returnBookRequestParams = z.object({
+  book_id: z.string().openapi({
+    example: "9f73c210-b417-409e-ac53-6cf4a0aa36c4",
+    description: 'A Books ID'
+  })
+})
+export const returnBookRequest = z.object({
+  params: returnBookRequestParams,
+});
+
+export const returnBookResponseSchema = z.object({
+  message: z.string().openapi({
+    example: "Book Returned Successfull",
+  }),
+  catalog_id: id,
+  returned_book_id: id,
+})
+
 export type newBookSchemaType = z.infer<typeof newBookSchema>;

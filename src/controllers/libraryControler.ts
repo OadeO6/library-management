@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { AddBook } from '../crud/db';
+import { AddBook, BorrowBook, ReturnBook } from '../crud/db';
 import { Book, Catalog } from '../models';
 import { UserTokenData } from '../schemas/types';
-import { newBookResponseSchema } from '../schemas/librarySchemas';
+import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema } from '../schemas/librarySchemas';
 import { responseError } from '../errors/utils';
+import { BookNotAvailableError } from '../errors/db';
 
 export const addBook = async (req: Request, res: Response) => {
   try {
@@ -37,16 +38,41 @@ export const viewBooks = async (req: Request, res: Response) => {
 
 export const borrowBook = async (req: Request, res: Response) => {
   try {
-    res.status(200).json({ message: "Endpoint not ready"});
+    const { catalog_id } = req.params;
+    const user = req.user as UserTokenData;
+
+    const borrowed_book_id = await BorrowBook(user, catalog_id);
+    res.status(200).json(
+      borrowBookResponseSchema.parse({
+        message: "Book Borrowed Succesfully",
+        catalog_id,
+        borrowed_book_id,
+      })
+    );
   } catch (error) {
+    if (error instanceof BookNotAvailableError) {
+      return res.status(404).json(responseError("Book Not Found Error", error));
+    }
     res.status(500).json(responseError("Internal Server Error", error));
   }
 };
 
 export const returnBook = async (req: Request, res: Response) => {
   try {
-    res.status(200).json({ message: "Endpoint not ready"});
+    const { book_id } = req.params;
+
+    const [ catalog_id, returned_book_id ]= await ReturnBook(book_id);
+    res.status(200).json(
+      returnBookResponseSchema.parse({
+        message: "Book Returned Succesfully",
+        catalog_id,
+        returned_book_id,
+      })
+    );
   } catch (error) {
+    if (error instanceof BookNotAvailableError) {
+      return res.status(404).json(responseError("Book Not Found Error", error));
+    }
     res.status(500).json(responseError("Internal Server Error", error));
   }
 };

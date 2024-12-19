@@ -6,13 +6,6 @@ import { UserTokenData, findUserArgType } from "../schemas/types";
 import { newBookSchemaType } from "../schemas/librarySchemas";
 
 
-interface BorrowBookData1 {
-  user_id: string;
-}
-
-interface BorrowBookData2 {
-  catalog_id: string;
-}
 
 interface ReturnBookData1 {
   user_id: string;
@@ -112,5 +105,69 @@ export const AddBook = async (
     } else {
       throw new TransactionFailedError("adding books", error.message);
     }
+  }
+};
+
+// 2. Borrow Book
+export const BorrowBook = async (
+  user: UserTokenData,
+  catalog_id: string
+): Promise<string> => {
+  const transaction: Transaction = await sequelize.transaction();
+  try {
+    const book = await Book.findOne({
+      where: { catalog_id, status: "available" },
+      transaction,
+    });
+    if (!book) throw new BookNotAvailableError("No available books for the specified catalog.");
+
+    await book.update(
+      { status: "borrowed", borrower_id: user.id },
+      { transaction }
+    );
+
+    await transaction.commit();
+    return book.id;
+  } catch (error) {
+    await transaction.rollback();
+    if (error instanceof BookNotAvailableError) {
+      throw error;
+    }
+    throw new TransactionFailedError("borrowing book", error.message);
+  }
+};
+
+// 3. Return Book
+export const ReturnBook = async (
+  book_id: string
+): Promise<[string, string]> => {
+  const transaction: Transaction = await sequelize.transaction();
+  try {
+    const book = await Book.findOne({
+      where: { id: book_id, status: "borrowed" },
+      transaction,
+    });
+    if (!book) throw new BookNotAvailableError("No such borrowed Book.");
+
+
+    await book.update(
+      { status: "available", borrower_id: null },
+      { transaction }
+    );
+    // const [updatedRows] = await book.update(
+    //   { status: "available", borrower_id: null },
+    //   { transaction }
+    // );
+    //
+    // if (updatedRows === 0) throw new BookNotBorrowedError("Book is not currently borrowed or does not exist.");
+
+    await transaction.commit();
+    return [book.catalog_id, book.id];
+  } catch (error) {
+    await transaction.rollback();
+    if (error instanceof BookNotAvailableError) {
+      throw error;
+    }
+    throw new TransactionFailedError("Error in returning book", error.message);
   }
 };
