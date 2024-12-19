@@ -1,7 +1,6 @@
-import { z } from 'zod';
 import { createDocument } from 'zod-openapi';
 import { userloginResponseSchema, userRegistrationResponseSchema, userRegistrationSchema } from './schemas/userSchemas';
-import { newBookResponseSchema, newBookSchema } from './schemas/librarySchemas';
+import { borrowBookRequestParams, borrowBookResponseSchema, newBookResponseSchema, newBookSchema, returnBookRequestParams, returnBookResponseSchema } from './schemas/librarySchemas';
 import { ErrorResponseSchema } from './schemas/types';
 
 export const api_doc = createDocument({
@@ -122,6 +121,74 @@ export const api_doc = createDocument({
           },
           '400': {
             description: '400 data validation error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '500': {
+            description: '500 Internal Server Error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+        },
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    '/book/borrow/{catalog_id}': {
+      put: {
+        operationId: 'borrowbook',
+        summary: 'Borrow A Book from Library',
+        requestParams: { path: borrowBookRequestParams  },
+        responses: {
+          '200': {
+            description: '200 Ok',
+            content: {
+              'application/json': { schema: borrowBookResponseSchema },
+            },
+          },
+          '400': {
+            description: '400 data validation error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '404': {
+            description: '404 Book Not Found Error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '500': {
+            description: '500 Internal Server Error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+        },
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    '/book/return/{book_id}': {
+      put: {
+        operationId: 'returnBook',
+        summary: 'Return A Borrowed Book',
+        requestParams: { path: returnBookRequestParams },
+        responses: {
+          '200': {
+            description: '200 Ok',
+            content: {
+              'application/json': { schema: returnBookResponseSchema },
+            },
+          },
+          '400': {
+            description: '400 data validation error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '404': {
+            description: '404 Book Not Found Error',
             content: {
               'application/json': { schema: ErrorResponseSchema },
             },

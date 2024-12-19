@@ -26,9 +26,9 @@ export const registerUser = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ error: error.errors });
+      return res.status(400).json(responseError("Schema validation error", error));
     } else if (error instanceof UserAlreadyExistsError){
-      return res.status(409).json({ error: error.message });
+      return res.status(409).json(responseError("User Already Exist Error", error));
     }
     res.status(500).json(responseError("Internal Server Error", error));
   }
