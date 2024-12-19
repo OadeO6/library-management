@@ -5,7 +5,7 @@ class Catalog extends Model<InferAttributes<Catalog>, InferCreationAttributes<Ca
   public id!: string;
   public title!: string;
   public author!: string;
-  public ISBN?: string;
+  public isbn?: string;
   public total_copy!: number;
   public available_copy!: number;
   public edition?: string;
@@ -29,7 +29,7 @@ Catalog.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    ISBN: {
+    isbn: {
       type: DataTypes.STRING,
       allowNull: true,
     },

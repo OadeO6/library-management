@@ -4,9 +4,14 @@ import {
 } from "zod-openapi";
 extendZodWithOpenApi(z);
 
-export const numericString = z.string().regex(/^\d+$/, {
+export const numericString = z
+.string()
+.regex(/^\d+$/, {
   message: "Must contain only numeric characters",
-});
+})
+.transform((value) => parseInt(value, 10))
+.or(z.number())
+.pipe(z.number());
 
 
 export const ErrorSchema = z.array(

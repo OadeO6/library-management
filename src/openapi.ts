@@ -1,6 +1,6 @@
 import { createDocument } from 'zod-openapi';
 import { userloginResponseSchema, userRegistrationResponseSchema, userRegistrationSchema } from './schemas/userSchemas';
-import { borrowBookRequestParams, borrowBookResponseSchema, newBookResponseSchema, newBookSchema, returnBookRequestParams, returnBookResponseSchema } from './schemas/librarySchemas';
+import { borrowBookRequestParams, borrowBookResponseSchema, newBookResponseSchema, newBookSchema, returnBookRequestParams, returnBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema } from './schemas/librarySchemas';
 import { ErrorResponseSchema } from './schemas/types';
 
 export const api_doc = createDocument({
@@ -121,6 +121,46 @@ export const api_doc = createDocument({
           },
           '400': {
             description: '400 data validation error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '500': {
+            description: '500 Internal Server Error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+        },
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    '/book/books': {
+      get: {
+        operationId: 'getbooks',
+        summary: 'Get Book Collections',
+        requestParams: { query: viewBooksRequestParams  },
+        responses: {
+          '200': {
+            description: '200 OK',
+            content: {
+              'application/json': { schema: viewBooksFullResponseSchema },
+            },
+          },
+          '2oo': {
+            description: '200 OK',
+            content: {
+              'application/json': { schema: viewBooksResponseSchema },
+            },
+          },
+          '400': {
+            description: '400 Data Validation Error',
+            content: {
+              'application/json': { schema: ErrorResponseSchema },
+            },
+          },
+          '401': {
+            description: '401 Incorrect cridentials',
             content: {
               'application/json': { schema: ErrorResponseSchema },
             },

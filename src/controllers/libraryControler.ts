@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { AddBook, BorrowBook, ReturnBook } from '../crud/db';
-import { Book, Catalog } from '../models';
+import { AddBook, BorrowBook, getBooks, ReturnBook } from '../crud/db';
 import { UserTokenData } from '../schemas/types';
-import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema } from '../schemas/librarySchemas';
+import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema, viewBookResponseSchema, viewBooksFullRequestSchemaType, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema, viewBooksResponseSchemaType } from '../schemas/librarySchemas';
 import { responseError } from '../errors/utils';
 import { BookNotAvailableError } from '../errors/db';
 
@@ -30,7 +29,35 @@ export const addBook = async (req: Request, res: Response) => {
 
 export const viewBooks = async (req: Request, res: Response) => {
   try {
-    res.status(200).json({ message: "Endpoint not ready"});
+    const data = viewBooksRequestParams.parse(req.query);
+    const catalogs = await getBooks(data);
+    let response: viewBooksResponseSchemaType;
+    const count: number = catalogs.length;
+    if (data.detailed == 'true') {
+      response = viewBooksFullResponseSchema.parse({
+        message: "Detailed list of books gotten successfuly",
+        books: catalogs,
+        count
+      })
+    } else {
+      response = viewBooksResponseSchema.parse({
+        message: "Less detailed list of books gotten successfuly",
+        books: catalogs,
+        count
+      })
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json(responseError("Internal Server Error", error));
+  }
+};
+
+export const viewBook = async (req: Request, res: Response) => {
+  try {
+    const { catalog_id } = req.params;
+    res.status(200).json(
+      viewBookResponseSchema.parse({})
+    );
   } catch (error) {
     res.status(500).json(responseError("Internal Server Error", error));
   }
