@@ -3,7 +3,7 @@ import { Book, Catalog, User } from "../models";
 import { Transaction, UniqueConstraintError, ForeignKeyConstraintError } from "sequelize";
 import { UserAlreadyExistsError , DonorNotFoundError, BookNotAvailableError, BookNotBorrowedError, TransactionFailedError, UserNotFoundError } from "../errors/db";
 import { UserTokenData, findUserArgType } from "../schemas/types";
-import { newBookSchemaType } from "../schemas/librarySchemas";
+import { DBBooksRequestParams, newBookSchemaType, viewBooksFullRequestParamsType } from "../schemas/librarySchemas";
 
 
 
@@ -57,7 +57,7 @@ export const AddBook = async (
       {
         title: book_data.title,
         author: book_data.author,
-        ISBN: book_data.isbn,
+        isbn: book_data.isbn,
         edition: book_data.edition,
         publisher: book_data.publisher,
         publication_year: book_data.publication_year,
@@ -169,5 +169,100 @@ export const ReturnBook = async (
       throw error;
     }
     throw new TransactionFailedError("Error in returning book", error.message);
+  }
+};
+
+// 4. Get Books
+export const getBooks = async (
+  data: viewBooksFullRequestParamsType
+): Promise<Catalog[]> => {
+  try {
+    let book_filter: Object = {};
+    let donor_filter: Object = {};
+    let borrower_filter: Object = {};
+    const catalog_filter = DBBooksRequestParams.parse(data);
+    const {
+      title,
+      author,
+      isbn,
+      edition,
+      publisher,
+      publication_year,
+      category,
+      borrower_library_number, donor_library_number, book_status
+    } = data;
+    if (book_status) {
+      book_filter["status"] = book_status;
+    }
+    if (borrower_library_number) {
+      borrower_filter["library_number"] = borrower_library_number;
+    }
+    if (donor_library_number) {
+      donor_filter["library_number"] = donor_library_number;
+    }
+    const catalog = await Catalog.findAll({
+      attributes: [
+        'id',
+        'title',
+        'author',
+        'isbn',
+        'edition',
+        'publisher',
+        'publication_year',
+        'category',
+        'total_copy',
+        'available_copy'
+      ],
+      where: catalog_filter,
+      include: [
+        {
+          model: Book,
+          attributes: [
+            'id',
+            'status'
+          ],
+          where: book_filter,
+          as: 'books',
+          required: true,
+          include : [
+            {
+              model: User,
+              attributes: [
+                'library_number'
+              ],
+              where: donor_filter,
+              required: false,
+              as: 'donor'
+            },
+            {
+              model: User,
+              attributes: [
+                'library_number'
+              ],
+              where: borrower_filter,
+              required: false,
+              as: 'borrower'
+            }
+          ]
+        },
+      ]
+    });
+    return catalog;
+  } catch (error) {
+    throw new TransactionFailedError("fetching books", error.message);
+  }
+};
+
+// 5. Get Books by Catalog ID
+export const getBooksByCatalogId = async (
+  data: GetBooksByCatalogIdData
+): Promise<Book[]> => {
+  try {
+    return await Book.findAll({
+      where: { catalog_id: data.catalog_id },
+      attributes: ["id", "status", "donor_id", "added_by"],
+    });
+  } catch (error) {
+    throw new TransactionFailedError("fetching books by catalog ID", error.message);
   }
 };

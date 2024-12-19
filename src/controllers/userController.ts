@@ -51,7 +51,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const token = await generateToken(user);
 
     res.status(200).json(
-      userloginResponseSchema.parse({ message: "Login successful", token })
+      userloginResponseSchema.parse({ message: "Login token generated successful", token })
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
