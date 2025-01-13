@@ -4,6 +4,7 @@ import { Transaction, UniqueConstraintError, ForeignKeyConstraintError } from "s
 import { UserAlreadyExistsError , DonorNotFoundError, BookNotAvailableError, BookNotBorrowedError, TransactionFailedError, UserNotFoundError } from "../errors/db";
 import { UserTokenData, findUserArgType } from "../schemas/types";
 import { DBBooksRequestParams, newBookSchemaType, viewBooksFullRequestParamsType } from "../schemas/librarySchemas";
+// import { unknown } from "zod";
 
 
 
@@ -33,7 +34,7 @@ export const createUser = async (data: User): Promise<User> => {
       throw new UserAlreadyExistsError(`User with email ${data.email} already exists.`);
     }
     // Handle other errors, such as database issues or validation errors
-    throw new TransactionFailedError("creating user", error.message);
+    throw new TransactionFailedError("creating user", (error as Error).message);
   }
 };
 
@@ -42,7 +43,7 @@ export const findUser = async (data: findUserArgType): Promise<User | null> => {
     const user = await User.findOne({ where: { ...data } });
     return user;
   } catch (error) {
-    throw new TransactionFailedError("finding user", error.message);
+    throw new TransactionFailedError("finding user", (error as Error).message);
   }
 };
 
@@ -76,7 +77,7 @@ export const AddBook = async (
     }
 
     const donor_id = donor ? donor.id : user.id;
-    const donor_library_number: string = donor ? book_data.donor_library_number : user.library_number;
+    const donor_library_number: string = (donor ? book_data.donor_library_number : user.library_number) as string;
 
     const books: Book[] = [];
     const count: number = book_data.count ? book_data.count : 1;
@@ -103,7 +104,7 @@ export const AddBook = async (
     } else if (error instanceof ForeignKeyConstraintError){
       throw new UserNotFoundError("Something went wrong");
     } else {
-      throw new TransactionFailedError("adding books", error.message);
+      throw new TransactionFailedError("adding books", (error as Error).message);
     }
   }
 };
@@ -133,7 +134,7 @@ export const BorrowBook = async (
     if (error instanceof BookNotAvailableError) {
       throw error;
     }
-    throw new TransactionFailedError("borrowing book", error.message);
+    throw new TransactionFailedError("borrowing book", (error as Error).message);
   }
 };
 
@@ -168,7 +169,7 @@ export const ReturnBook = async (
     if (error instanceof BookNotAvailableError) {
       throw error;
     }
-    throw new TransactionFailedError("Error in returning book", error.message);
+    throw new TransactionFailedError("Error in returning book", (error as Error).message);
   }
 };
 
@@ -177,18 +178,18 @@ export const getBooks = async (
   data: viewBooksFullRequestParamsType
 ): Promise<Catalog[]> => {
   try {
-    let book_filter: Object = {};
-    let donor_filter: Object = {};
-    let borrower_filter: Object = {};
+    let book_filter: Record<string, any> = {};
+    let donor_filter: Record<string, any> = {};
+    let borrower_filter: Record<string, any> = {};
     const catalog_filter = DBBooksRequestParams.parse(data);
     const {
-      title,
-      author,
-      isbn,
-      edition,
-      publisher,
-      publication_year,
-      category,
+      // title,
+      // author,
+      // isbn,
+      // edition,
+      // publisher,
+      // publication_year,
+      // category,
       borrower_library_number, donor_library_number, book_status
     } = data;
     if (book_status) {
@@ -249,7 +250,7 @@ export const getBooks = async (
     });
     return catalog;
   } catch (error) {
-    throw new TransactionFailedError("fetching books", error.message);
+    throw new TransactionFailedError("fetching books", (error as Error).message);
   }
 };
 
@@ -263,6 +264,6 @@ export const getBooksByCatalogId = async (
       attributes: ["id", "status", "donor_id", "added_by"],
     });
   } catch (error) {
-    throw new TransactionFailedError("fetching books by catalog ID", error.message);
+    throw new TransactionFailedError("fetching books by catalog ID", (error as Error).message);
   }
 };

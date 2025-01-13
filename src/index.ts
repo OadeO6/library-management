@@ -1,10 +1,10 @@
 import cors from "cors";
 import 'zod-openapi/extend';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import bodyParser from 'body-parser';
 import userRouter from './routes/userRoutes';
 import { connectDB } from "./connections/db";
-import { createDocument } from 'zod-openapi';
+// import { createDocument } from 'zod-openapi';
 import { z } from 'zod';
 import swaggerUi from "swagger-ui-express";
 import libraryRouter from "./routes/libraryRoutes";
@@ -21,12 +21,12 @@ app.use('/user', userRouter);
 app.use('/book', libraryRouter);
 
 // Error handling middleware
-app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
+app.use(((err: Error, _: Request, res: Response, next: NextFunction) => {
   if (err instanceof SyntaxError && 'status' in err && (err as any).status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
   next(err); // Forward the error to the default handler
-});
+}) as ErrorRequestHandler);
 
 // Zod schema for the health check response
 const messageSchema = z.string().openapi({

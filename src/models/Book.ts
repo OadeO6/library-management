@@ -1,12 +1,12 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize";
+import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from "sequelize";
 import sequelize from "../connections/db";
 
 class Book extends Model<InferAttributes<Book>, InferCreationAttributes<Book>> {
-  public id!: string;
+  public id!: CreationOptional<string>;
   public catalog_id!: string;
-  public status!: "borrowed" | "available" | "lost";
-  public donor_id?: string; // References user id
-  public borrower_id?: string; // References user id
+  public status!: CreationOptional<"borrowed" | "available" | "lost">;
+  public donor_id?: CreationOptional<string>; // References user id
+  public borrower_id?: CreationOptional<string | null>; // References user id
 }
 
 Book.init(

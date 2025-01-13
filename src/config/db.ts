@@ -1,7 +1,8 @@
-import { Sequelize } from "sequelize";
+// import { Sequelize } from "sequelize";
+import { ConfigOptionsType } from "../schemas/types";
 import { NODE_ENV, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRESQL_DB, POSTGRESQL_USER } from "./env";
 
-export const CONFIG = {
+export const CONFIG: ConfigOptionsType = {
   "development": {
     "username": POSTGRESQL_USER,
     "password": POSTGRES_PASSWORD,

@@ -1,3 +1,3 @@
 # library-management
 
-> API documentation endpoint http://URL/doc
+> API documentation endpoint https://library-management-xahx.onrender.com/docs

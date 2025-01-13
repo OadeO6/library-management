@@ -1,16 +1,17 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize";
+import { DataTypes, Model, CreationOptional,InferAttributes, InferCreationAttributes } from "sequelize";
 import sequelize from "../connections/db";
 
+
 class Catalog extends Model<InferAttributes<Catalog>, InferCreationAttributes<Catalog>> {
-  public id!: string;
+  public id!: CreationOptional<string>;
   public title!: string;
   public author!: string;
   public isbn?: string;
-  public total_copy!: number;
-  public available_copy!: number;
-  public edition?: string;
-  public publisher?: string;
-  public publication_year?: number;
+  public total_copy!: CreationOptional<number>;
+  public available_copy!: CreationOptional<number>;
+  public edition?: CreationOptional<string>;
+  public publisher?: CreationOptional<string>;
+  public publication_year?: CreationOptional<number>;
   public category!: string[];
 }
 

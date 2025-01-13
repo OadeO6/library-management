@@ -1,11 +1,11 @@
-import { DataTypes, Model, InferAttributes, InferCreationAttributes } from "sequelize";
+import { DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import sequelize from "../connections/db";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  public id!: string;
+  public id!: CreationOptional<string>;
   public library_number!: string;
   public email!: string;
-  public phone_number?: string;
+  public phone_number?: CreationOptional<string>;
   public first_name!: string;
   public last_name!: string;
   public password!: string;

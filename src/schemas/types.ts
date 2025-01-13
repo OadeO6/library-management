@@ -1,3 +1,4 @@
+import { Options } from "sequelize";
 import { z } from "zod";
 import {
   extendZodWithOpenApi,
@@ -44,3 +45,5 @@ export interface UserTokenData {
 export interface findUserArgType {
   email: string;
 }
+
+export type ConfigOptionsType = Record<nodeEnvironmentType, Options>

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AddBook, BorrowBook, getBooks, ReturnBook } from '../crud/db';
 import { UserTokenData } from '../schemas/types';
-import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema, viewBookResponseSchema, viewBooksFullRequestSchemaType, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema, viewBooksResponseSchemaType } from '../schemas/librarySchemas';
+import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema, viewBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema, viewBooksResponseSchemaType } from '../schemas/librarySchemas';
 import { responseError } from '../errors/utils';
 import { BookNotAvailableError } from '../errors/db';
 
@@ -23,7 +23,7 @@ export const addBook = async (req: Request, res: Response) => {
       })
     );
   } catch (error) {
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
 
@@ -48,22 +48,22 @@ export const viewBooks = async (req: Request, res: Response) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
 
 export const viewBook = async (req: Request, res: Response) => {
   try {
-    const { catalog_id } = req.params;
+    // const { catalog_id } = req.params;
     res.status(200).json(
       viewBookResponseSchema.parse({})
     );
   } catch (error) {
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
 
-export const borrowBook = async (req: Request, res: Response) => {
+export const borrowBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const { catalog_id } = req.params;
     const user = req.user as UserTokenData;
@@ -78,13 +78,14 @@ export const borrowBook = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof BookNotAvailableError) {
-      return res.status(404).json(responseError("Book Not Found Error", error));
+      res.status(404).json(responseError("Book Not Found Error", error));
+      return;
     }
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
 
-export const returnBook = async (req: Request, res: Response) => {
+export const returnBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const { book_id } = req.params;
 
@@ -98,8 +99,9 @@ export const returnBook = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof BookNotAvailableError) {
-      return res.status(404).json(responseError("Book Not Found Error", error));
+      res.status(404).json(responseError("Book Not Found Error", error));
+      return;
     }
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };

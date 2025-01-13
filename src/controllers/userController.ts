@@ -9,7 +9,7 @@ import { userloginResponseSchema, userRegistrationResponseSchema } from '../sche
 import { responseError } from '../errors/utils';
 
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const hashedPassword = await generatePasswordHash(req.body.password);
     const libraryNumber = await generateLibraryNumber();
@@ -26,25 +26,29 @@ export const registerUser = async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json(responseError("Schema validation error", error));
+      res.status(400).json(responseError("Schema validation error", error));
+      return;
     } else if (error instanceof UserAlreadyExistsError){
-      return res.status(409).json(responseError("User Already Exist Error", error));
+      res.status(409).json(responseError("User Already Exist Error", error));
+      return;
     }
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response): Promise<any> => {
   try {
     // Find user
     const user = await findUser({ email: req.body.email });
     if (!user) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      res.status(401).json({ error: "Invalid email or password" });
+      return;
     }
 
     const passwordValid = await comparePassword(req.body.password, user.password)
     if (!passwordValid) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      res.status(401).json({ error: "Invalid email or password" });
+      return;
     }
 
     // Generate JWT
@@ -57,6 +61,6 @@ export const loginUser = async (req: Request, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: "Schema Validation error", details: error.errors });
     }
-    res.status(500).json(responseError("Internal Server Error", error));
+    res.status(500).json(responseError("Internal Server Error", error as Error));
   }
 };
