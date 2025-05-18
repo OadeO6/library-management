@@ -10,12 +10,12 @@ sudo docker pull postgres:17
 ### dev
 > No typescript compillation
 ```
-sudo docker run -d --network host  --name custom-postgres  -e POSTGRES_DB=my_db  -e POSTGRES_USER=postgres  -e POSTGRES_PASSWORD=test1234 -p 5432:5432  postgres || sudo docker start custom-postgres
+sudo docker run -d --network host  --name custom-postgres  -e POSTGRES_DB=my_db  -e POSTGRES_USER=postgres  -e POSTGRES_PASSWORD=test1234 -p 5432:5432  postgres:17 || sudo docker start custom-postgres
 npm run dev
 ```
 ### prod
 ```
-sudo docker run -d --network host  --name custom-postgres  -e POSTGRES_DB=my_db  -e POSTGRES_USER=postgres  -e POSTGRES_PASSWORD=test1234 -p 5432:5432  postgres || sudo docker start custom-postgres
+sudo docker run -d --network host  --name custom-postgres  -e POSTGRES_DB=my_db  -e POSTGRES_USER=postgres  -e POSTGRES_PASSWORD=test1234 -p 5432:5432  postgres:17 || sudo docker start custom-postgres
 PORT=3000 NODE_ENV=development JWT_SECRET=mysecret POSTGRESQL_PORT=5432 POSTGRESQL_DB=my_db POSTGRESQL_USER=postgres POSTGRES_PASSWORD=test1234 POSTGRES_HOST=localhost npm run start
 ```
 
