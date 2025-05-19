@@ -1,8 +1,8 @@
 import express from 'express';
-import { addBook, borrowBook, returnBook, viewBook, viewBooks } from '../controllers/libraryControler';
-import { borrowBookRequest, newBookRequest, returnBookRequest, viewBookRequest, viewBooksRequest } from '../schemas/librarySchemas';
-import { authenticateToken } from '../middleware/authMiddleware';
-import { validateData } from '../middleware/validationMiddleware';
+import { addBook, borrowBook, returnBook, viewBook, viewBooks } from '../../modules/library/libraryControler';
+import { borrowBookRequest, newBookRequest, returnBookRequest, viewBookRequest, viewBooksRequest } from '../../schemas/librarySchemas';
+import { authenticateToken } from '../../middleware/authMiddleware';
+import { validateData } from '../../middleware/validationMiddleware';
 
 const libraryRouter = express.Router();
 
