@@ -2,12 +2,12 @@ import cors from "cors";
 import 'zod-openapi/extend';
 import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import bodyParser from 'body-parser';
-import userRouter from "./modules/user/userRoutes";
+import userRouter from "./modules/user/router";
 import { connectDB } from "./connections/db";
 // import { createDocument } from 'zod-openapi';
 import { z } from 'zod';
 import swaggerUi from "swagger-ui-express";
-import libraryRouter from "./modules/library/libraryRoutes";
+import libraryRouter from "./modules/library/router";
 import { api_doc } from "./openapi";
 import { PORT } from "./config/env";
 

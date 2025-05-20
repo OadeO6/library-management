@@ -1,5 +1,5 @@
 // import { Sequelize } from "sequelize";
-import { ConfigOptionsType } from "../schemas/types";
+import { ConfigOptionsType } from "../types";
 import { NODE_ENV, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRESQL_DB, POSTGRESQL_USER } from "./env";
 
 export const CONFIG: ConfigOptionsType = {

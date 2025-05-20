@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   extendZodWithOpenApi,
 } from "zod-openapi";
-import { numericString } from "./types";
+import { numericString } from "../../types";
 extendZodWithOpenApi(z);
 
 

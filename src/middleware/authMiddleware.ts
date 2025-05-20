@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { decodeToken } from "../auth/util";
-import { UserTokenData } from "../schemas/types";
+import { UserTokenData } from "../types";
 
 export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;

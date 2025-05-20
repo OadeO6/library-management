@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { AddBook, BorrowBook, getBooks, ReturnBook } from '../../crud/db';
-import { UserTokenData } from '../../schemas/types';
-import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema, viewBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema, viewBooksResponseSchemaType } from '../../schemas/librarySchemas';
+import { AddBook, BorrowBook, getBooks, ReturnBook } from './crud';
+import { UserTokenData } from '../../types';
+import { borrowBookResponseSchema, newBookResponseSchema, returnBookResponseSchema, viewBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema, viewBooksResponseSchemaType } from './schemas';
 import { responseError } from '../../errors/utils';
 import { BookNotAvailableError } from '../../errors/db';
 

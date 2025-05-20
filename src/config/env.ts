@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { nodeEnvironment, numericString } from "../schemas/types";
+import { nodeEnvironment, numericString } from "../types";
 
 const EnvSchema = z.object({
   PORT: numericString.default("3000"),

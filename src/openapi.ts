@@ -1,7 +1,7 @@
 import { createDocument } from 'zod-openapi';
-import { userloginResponseSchema, userRegistrationResponseSchema, userRegistrationSchema } from './schemas/userSchemas';
-import { borrowBookRequestParams, borrowBookResponseSchema, newBookResponseSchema, newBookSchema, returnBookRequestParams, returnBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema } from './schemas/librarySchemas';
-import { ErrorResponseSchema } from './schemas/types';
+import { userloginResponseSchema, userRegistrationResponseSchema, userRegistrationSchema } from './modules/user/schemas';
+import { borrowBookRequestParams, borrowBookResponseSchema, newBookResponseSchema, newBookSchema, returnBookRequestParams, returnBookResponseSchema, viewBooksFullResponseSchema, viewBooksRequestParams, viewBooksResponseSchema } from './modules/library/schemas';
+import { ErrorResponseSchema } from './types';
 
 export const api_doc = createDocument({
   openapi: '3.1.0',

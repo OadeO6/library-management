@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { comparePassword, generateToken } from '../../auth/util';
 import { generatePasswordHash } from "../../auth/util";
-import { generateLibraryNumber } from "../../utils/library";
 import { z } from 'zod';
-import { createUser, findUser } from '../../crud/db';
+import { createUser, findUser } from './crud';
 import { UserAlreadyExistsError } from '../../errors/db';
-import { userloginResponseSchema, userRegistrationResponseSchema } from '../../schemas/userSchemas';
+import { userloginResponseSchema, userRegistrationResponseSchema } from './schemas';
 import { responseError } from '../../errors/utils';
+import { generateLibraryNumber } from '../library/utils';
 
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {

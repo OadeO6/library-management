@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { ErrorSchemaType } from "../schemas/types";
+import { ErrorSchemaType } from "../types";
 
 export const responseError = (message: string, error: ZodError | Error | null = null) => {
   let errorMessages: ErrorSchemaType = [];

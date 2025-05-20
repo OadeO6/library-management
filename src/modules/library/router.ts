@@ -1,6 +1,6 @@
 import express from 'express';
-import { addBook, borrowBook, returnBook, viewBook, viewBooks } from '../../modules/library/libraryControler';
-import { borrowBookRequest, newBookRequest, returnBookRequest, viewBookRequest, viewBooksRequest } from '../../schemas/librarySchemas';
+import { addBook, borrowBook, returnBook, viewBook, viewBooks } from './controler';
+import { borrowBookRequest, newBookRequest, returnBookRequest, viewBookRequest, viewBooksRequest } from './schemas';
 import { authenticateToken } from '../../middleware/authMiddleware';
 import { validateData } from '../../middleware/validationMiddleware';
 

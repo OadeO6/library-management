@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { JWT_SECRET } from "../config/env";
 import { User } from "../models";
-import { UserTokenData } from "../schemas/types";
+import { UserTokenData } from "../types";
 
 export const comparePassword = async (inputPassword: string, userPassword: string) => {
   const isPasswordValid = await bcrypt.compare(inputPassword, userPassword);

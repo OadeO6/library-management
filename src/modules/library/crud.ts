@@ -1,51 +1,14 @@
-import sequelize from "../connections/db";
-import { Book, Catalog, User } from "../models";
-import { Transaction, UniqueConstraintError, ForeignKeyConstraintError } from "sequelize";
-import { UserAlreadyExistsError , DonorNotFoundError, BookNotAvailableError, BookNotBorrowedError, TransactionFailedError, UserNotFoundError } from "../errors/db";
-import { UserTokenData, findUserArgType } from "../schemas/types";
-import { DBBooksRequestParams, newBookSchemaType, viewBooksFullRequestParamsType } from "../schemas/librarySchemas";
-// import { unknown } from "zod";
+import sequelize from "../../connections/db";
+import { Book, Catalog, User } from "../../models";
+import { Transaction, ForeignKeyConstraintError } from "sequelize";
+import { DonorNotFoundError, BookNotAvailableError, TransactionFailedError, UserNotFoundError } from "../../errors/db";
+import { UserTokenData } from "../../types";
+import { DBBooksRequestParams, newBookSchemaType, viewBooksFullRequestParamsType } from "./schemas";
 
-
-
-interface ReturnBookData1 {
-  user_id: string;
-}
-
-interface ReturnBookData2 {
-  book_id: string;
-}
-
-interface GetBooksData {
-  available?: boolean;
-}
 
 interface GetBooksByCatalogIdData {
   catalog_id: string;
 }
-
-
-// User Operations
-export const createUser = async (data: User): Promise<User> => {
-  try {
-    return await User.create(data);
-  } catch (error) {
-    if (error instanceof UniqueConstraintError) {
-      throw new UserAlreadyExistsError(`User with email ${data.email} already exists.`);
-    }
-    // Handle other errors, such as database issues or validation errors
-    throw new TransactionFailedError("creating user", (error as Error).message);
-  }
-};
-
-export const findUser = async (data: findUserArgType): Promise<User | null> => {
-  try {
-    const user = await User.findOne({ where: { ...data } });
-    return user;
-  } catch (error) {
-    throw new TransactionFailedError("finding user", (error as Error).message);
-  }
-};
 
 // 1. Add Book
 export const AddBook = async (
