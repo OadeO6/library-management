@@ -22,7 +22,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     });
 
     res.status(201).json(
-      userRegistrationResponseSchema.parse({ message: "User registered successfully", user })
+      { message: "User registered successfully", user }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -55,7 +55,7 @@ export const loginUser = async (req: Request, res: Response): Promise<any> => {
     const token = await generateToken(user);
 
     res.status(200).json(
-      userloginResponseSchema.parse({ message: "Login token generated successful", token })
+      { message: "Login token generated successful", token }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
